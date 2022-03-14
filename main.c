@@ -1,6 +1,8 @@
-#include <stdio.h>
+#include "sorting/sorting_.h"
+#include "sorting/asymptotic.c"
 
 int main() {
-    printf("Hello, World!\n");
+    timeExperiment();
+
     return 0;
 }
