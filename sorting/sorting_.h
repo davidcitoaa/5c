@@ -30,6 +30,7 @@ void insertionSort(int *a, size_t n);
 void bubbleSort(int *a, size_t n);
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+// Сортировка Расческой
 void combSort(int *a, size_t n);
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -56,15 +57,25 @@ void mergeSort(int *a, size_t n);
 
 // Сортировка Шелла >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 void shellSort(int *a, size_t n);
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-// Сортировка Гномья >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-void gnomeSort(int *a, size_t n);
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-// Сортировка Гномья(оптимизация) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-void gnomeSortOptimaze(int *const a, const size_t n);
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 int compareInts(const void *a, const void *b);
+
+long long insertionSortN(int *a, size_t size);
+
+long long bubbleSortN(int *a, size_t size);
+
+long long combsortN(int *a, const size_t size);
+
+long long shellSortN(int *a, size_t size);
+
+long long mergeN(const int *a, const size_t n, const int *b, const size_t m, int *c);
+
+long long mergeSortN_(int *source, size_t l, size_t r, int *buffer);
+
+long long mergeSortN(int *a, size_t n);
+
+long long selectionSortN(int *a, size_t size);
+
 #endif //INC_4C_SORTING__H

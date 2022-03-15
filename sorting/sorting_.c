@@ -202,40 +202,117 @@ void shellSort(int *const a, const size_t n) {
 }
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-// Сортировка Гномья >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-void gnomeSort(int *const a, const size_t n) {
-    register size_t i = 1;
-    while (i < n) {
-        if (a[i - 1] <= a[i])
-            i++;
-        else {
-            swap(&a[i - 1], &a[i]);
-            i = i > 1 ? i - 1 : i;
-        }
-    }
-}
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-// Сортировка Гномья (оптимизация) >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-void gnomeSortOptimaze(int *const a, const size_t n) {
-    register size_t i = 1;
-    register size_t j = 2;
-    while (i < n) {
-        if (a[i - 1] <= a[i]) {
-            i = j;
-            j++;
-        } else {
-            swap(&a[i - 1], &a[i]);
-            i--;
-            if (!i) {
-                i = j;
-                j++;
-            }
-        }
-    }
-}
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
 int compareInts(const void *a, const void *b) {
     return *(const int *) a - *(const int *) b;
+}
+
+long long insertionSortN(int *a, size_t size) {
+    long long countComp = 0;
+    for (size_t i = 1; i < size && ++countComp; i++) {
+        int t = a[i];
+        size_t j = i;
+        while (j > 0 && ++countComp && a[j - 1] > t && ++countComp) {
+            a[j] = a[j - 1];
+            j--;
+        }
+        a[j] = t;
+    }
+    return countComp;
+}
+
+long long bubbleSortN(int *a, size_t size) {
+    long long countComp = 0;
+    for (size_t i = 0; i < size - 1 && ++countComp; i++)
+        for (size_t j = size - 1; j > i && ++countComp; j--)
+            if (a[j - 1] > a[j] && ++countComp)
+                swap(&a[j - 1], &a[j]);
+
+    return countComp;
+}
+
+long long combsortN(int *a, const size_t size) {
+    size_t step = size;
+    int swapped = 1;
+    long long countComp = 0;
+    while (step > 1 && ++countComp || swapped && ++countComp) {
+        if (step > 1 && ++countComp)
+            step /= 1.24733;
+        swapped = 0;
+        for (size_t i = 0, j = i + step; j < size && ++countComp; ++i, ++j)
+            if (a[i] > a[j] && ++countComp) {
+                swap(&a[i], &a[j]);
+                swapped = 1;
+            }
+    }
+    return countComp;
+}
+
+long long shellSortN(int *a, size_t size) {
+    long long countComp = 0;
+    for (size_t step = size / 2; step > 0 && ++countComp; step /= 2)
+        for (size_t i = step; i < size && ++countComp; i++) {
+            int tmp = a[i];
+            size_t j;
+            for (j = i; j >= step && ++countComp; j -= step) {
+                if (tmp < a[j - step] && ++countComp)
+                    a[j] = a[j - step];
+                else
+                    break;
+            }
+            a[j] = tmp;
+        }
+    return countComp;
+}
+
+long long mergeN(const int *a, const size_t n,
+                 const int *b, const size_t m, int *c) {
+    long long countComp = 0;
+    int i = 0, j = 0;
+    while (i < n && ++countComp || j < m && ++countComp) {
+        if (j == m && ++countComp || i < n && ++countComp && a[i] < b[j] && ++countComp) {
+            c[i + j] = a[i];
+            i++;
+        } else {
+            c[i + j] = b[j];
+            j++;
+        }
+    }
+    return countComp;
+}
+
+
+long long mergeSortN_(int *source, size_t l, size_t r, int *buffer) {
+    size_t n = r - l;
+    long long countComp = 0;
+    if (n <= 1 && ++countComp)
+        return countComp;
+
+    size_t m = (l + r) / 2;
+    mergeSort_(source, l, m, buffer);
+    mergeSort_(source, m, r, buffer);
+
+    countComp = mergeN(source + l, m - l, source + m, r - m, buffer);
+    memcpy(source + l, buffer, sizeof(int) * n);
+
+    return countComp;
+}
+
+long long mergeSortN(int *a, size_t n) {
+    int *buffer = (int *) malloc(sizeof(int) * n);
+    long long countComp = mergeSortN_(a, 0, n, buffer);
+    free(buffer);
+
+    return countComp;
+}
+
+long long selectionSortN(int *a, size_t size) {
+    long long countComp = 0;
+    for (int i = 0; i < size - 1 && ++countComp; i++) {
+        int minPos = i;
+        for (int j = i + 1; j < size && ++countComp; j++)
+            if (a[j] < a[minPos] && ++countComp)
+                minPos = j;
+        swap(&a[i], &a[minPos]);
+    }
+    return countComp;
 }

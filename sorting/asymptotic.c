@@ -23,6 +23,14 @@ typedef struct GeneratingFunc {
     char name[64];
 } GeneratingFunc;
 
+// функция сортировки
+typedef struct nCompSort {
+    long long (*nComp)(int *a, size_t n); // указатель на функцию
+    // сортировки
+    char name[64];                   // имя сортировки,
+    // используемое при выводе
+} nCompSort;
+
 double getTime() {
     clock_t start_time = clock();
     // фрагмент кода
@@ -91,6 +99,45 @@ void checkTime(void (*sortFunc )(int *, size_t),
     }
 }
 
+void checkNComp(long long (*nComp )(int *a, size_t n),
+                void (*generateFunc)(int *, size_t),
+                size_t size, char *experimentName, char *name) {
+    static size_t runCounter = 1;
+
+    // генерация последовательности
+    static int innerBuffer[100000];
+    generateFunc(innerBuffer, size);
+    printf("Run #%zu| ", runCounter++);
+    printf("Name: %s\n", experimentName);
+
+    // замер времени
+    long long nComps = nComp(innerBuffer, size);
+
+    // результаты замера
+    printf("Status: ");
+    if (isOrdered(innerBuffer, size)) {
+        printf("OK! Comps: %lld\n", nComps);
+
+        // запись в файл
+        char filename[256];
+        sprintf(filename, "./data/Comps/%s.csv", experimentName);
+        FILE *f = fopen(filename, "a");
+        if (f == NULL) {
+            printf("FileOpenError %s", filename);
+            exit(1);
+        }
+        fprintf(f, "%zu; %lld\n", size, nComps);
+        fclose(f);
+    } else {
+        printf("Wrong!\n");
+
+        // вывод массива, который не смог быть отсортирован
+        outputArray(innerBuffer, size);
+
+        exit(1);
+    }
+}
+
 void timeExperiment() {
     // описание функций сортировки
     SortFunc sorts[] = {
@@ -102,11 +149,20 @@ void timeExperiment() {
             {countSort,         " countSort "},
             {qSort,             " qSort "},
             {mergeSort,         " mergeSort "},
-            {gnomeSort,         " gnomeSort "},
-            {gnomeSortOptimaze, " gnomeSortOptimaze "}
             // вы добавите свои сортировки
     };
     const unsigned FUNCS_N = ARRAY_SIZE (sorts);
+
+    nCompSort nComps[] = {
+            {selectionSortN, "selectionSortN"},
+            {insertionSortN, "insertionSortN"},
+            {bubbleSortN,    "bubbleSortN"},
+            {combsortN,      "combSortN"},
+            {shellSortN,     "shellSortN"},
+            {mergeSortN,     "mergeSortN"},
+    };
+
+    const unsigned COMPS_N = ARRAY_SIZE(nComps);
 
     // описание функций генерации
     GeneratingFunc generatingFuncs[] = {
